@@ -5,7 +5,7 @@ import random
 import math
 import pickle
 
-beams = pickle.load(open('askap12_beams.p','rb'))
+beams = pickle.load(open('askap36_boresight_beams_simulated.p','rb'))
 
 DEG = math.pi/180.0
 ARCMIN = DEG/60
@@ -22,7 +22,10 @@ def askap_beam(E,lm,p):
   ns = E.Subscope();
 
   ref_freq = 1.409e9
-  ants = ['2','4','5','10', '12', '13', '14', '16', '24', '27', '28', '30']
+  ref_fwhm = 1.0159
+
+  #ants = ['2','4','5','10', '12', '13', '14', '16', '24', '27', '28', '30']
+  ants = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35']
 
   beam_key_xx = ants[int(p)]+','+str(beam_num+1)+',XX'
   beam_key_yy = ants[int(p)]+','+str(beam_num+1)+',YY'
@@ -33,29 +36,31 @@ def askap_beam(E,lm,p):
   # beam parameters are all FWHM, whereas Gaussian equation
   # takes dispersions, hence the 2.355 divisions
 
+  fscale = 3.0+((-2.0/ref_freq)*Meq.Freq())
+
   x0_x = beam_params_xx[0] * DEG
   y0_x = beam_params_xx[1] * DEG
   if use_ideal:
-    ns.maj_x << (1.0/2.355) * ref_freq / Meq.Freq()
-    ns.min_x << (1.0/2.355) * ref_freq / Meq.Freq()
+    ns.maj_x << (ref_fwhm/2.355) * fscale
+    ns.min_x << (ref_fwhm/2.355) * fscale
     PA_x = 0.0
     A_x = 1.0
   else:
-    ns.maj_x << (beam_params_xx[2]/2.355) * ref_freq / Meq.Freq()
-    ns.min_x << (beam_params_xx[3]/2.355) * ref_freq / Meq.Freq()
+    ns.maj_x << (beam_params_xx[2]/2.355) * fscale
+    ns.min_x << (beam_params_xx[3]/2.355) * fscale
     PA_x = beam_params_xx[4]
     A_x = beam_params_xx[5]
 
   x0_y = beam_params_yy[0] * DEG
   y0_y = beam_params_yy[1] * DEG
   if use_ideal:
-    ns.maj_y << (1.0/2.355) * ref_freq / Meq.Freq()
-    ns.min_y << (1.0/2.355) * ref_freq / Meq.Freq()
+    ns.maj_y << (ref_fwhm/2.355) * fscale
+    ns.min_y << (ref_fwhm/2.355) * fscale
     PA_y = 0.0
     A_y = 1.0
   else:
-    ns.maj_y << (beam_params_yy[2]/2.355) * ref_freq / Meq.Freq()
-    ns.min_y << (beam_params_yy[3]/2.355) * ref_freq / Meq.Freq()
+    ns.maj_y << (beam_params_yy[2]/2.355) * fscale
+    ns.min_y << (beam_params_yy[3]/2.355) * fscale
     PA_y = beam_params_yy[4]
     A_y = beam_params_yy[5]
 
