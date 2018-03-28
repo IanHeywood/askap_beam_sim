@@ -5,7 +5,7 @@ import random
 import math
 import pickle
 
-beams = pickle.load(open('askap36_boresight_beams_simulated.p','rb'))
+beams = pickle.load(open('askap36_beams_simulated.p','rb'))
 
 DEG = math.pi/180.0
 ARCMIN = DEG/60
